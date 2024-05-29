@@ -1,2 +1,2 @@
-# docker-mailhog-smtp-server
-Running MailHog in a Docker Container
+# mailhog-smtp-server-setup-guide
+Running MailHog in a Docker Container or a Kubernetes Cluster
