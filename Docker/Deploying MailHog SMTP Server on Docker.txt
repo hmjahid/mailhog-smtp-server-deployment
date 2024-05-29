@@ -1,0 +1,80 @@
+Deploying MailHog SMTP server in a Docker container and using it with your application involves several steps, including setting up the container, configuring MailHog, and then configuring your application to use MailHog for sending emails. Here's a detailed guide:
+1. Running MailHog in a Docker Container
+
+First, ensure you have Docker installed on your system. Then, you can run the MailHog container using the following command:
+
+docker run -d -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog
+
+This command does the following:
+
+    -d: Runs the container in detached mode.
+    -p 1025:1025: Maps port 1025 on your host to port 1025 in the container for SMTP.
+    -p 8025:8025: Maps port 8025 on your host to port 8025 in the container for the web UI.
+    --name mailhog: Names the container "mailhog".
+    mailhog/mailhog: Specifies the MailHog image from Docker Hub.
+
+2. Accessing MailHog Web Interface
+
+Once the container is running, you can access the MailHog web interface by navigating to http://localhost:8025 in your web browser. This interface allows you to view the emails captured by MailHog.
+3. Configuring Your Application to Use MailHog
+
+You need to configure your application to send emails to the MailHog SMTP server. This typically involves setting the SMTP server settings in your application's configuration file.
+
+#For example, if you are using a PHP application with PHPMailer, your configuration might look like this:
+
+#php
+
+$mail = new PHPMailer();
+$mail->isSMTP();
+$mail->Host = 'localhost';
+$mail->Port = 1025; // MailHog SMTP port
+$mail->SMTPAuth = false;
+$mail->setFrom('from@example.com', 'Mailer');
+$mail->addAddress('recipient@example.com', 'Recipient');
+$mail->Subject = 'Test Email';
+$mail->Body    = 'This is a test email.';
+
+#For a Node.js application using Nodemailer, your configuration might look like this:
+
+#javascript
+
+const nodemailer = require('nodemailer');
+
+let transporter = nodemailer.createTransport({
+    host: 'localhost',
+    port: 1025,
+    secure: false, // True for 465, false for other ports
+    auth: {
+        user: '',
+        pass: ''
+    }
+});
+
+let mailOptions = {
+    from: '"Mailer" <from@example.com>',
+    to: 'recipient@example.com',
+    subject: 'Test Email',
+    text: 'This is a test email.'
+};
+
+transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+        return console.log(error);
+    }
+    console.log('Message sent: %s', info.messageId);
+});
+
+4. Sending Test Emails
+
+After configuring your application, you can send test emails. These emails will be captured by MailHog and displayed in the web interface at http://localhost:8025.
+5. Stopping the MailHog Container
+
+When you are done testing, you can stop the MailHog container using:
+
+docker stop mailhog
+
+And remove the container if you no longer need it:
+
+docker rm mailhog
+
+By following these steps, you can effectively use MailHog SMTP server running in a Docker container to capture and view emails sent from your application during development and testing.
