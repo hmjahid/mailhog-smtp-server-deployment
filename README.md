@@ -1,2 +1,2 @@
 # MailHog SMTP Server Deployment
-Deploying MailHog in a Docker Container or a Kubernetes Cluster
+Deploying MailHog SMTP Server in a Docker Container or a Kubernetes Cluster
